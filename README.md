@@ -1,170 +1,199 @@
-<div align="center">
+# AI Financial Research Agent
 
-# 📈 AI Financial Research Agent
+A full-stack equity research platform that combines retrieval-augmented document
+analysis with a deterministic quantitative engine. Analysts can upload regulatory
+filings and interrogate them in natural language with source-cited answers, then
+run discounted cash-flow models, ratio diagnostics, peer benchmarking, news
+sentiment, and portfolio analytics from a single workspace.
 
-### Your own Bloomberg Terminal, powered by AI.
+<p>
+  <img alt="Python"     src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white">
+  <img alt="FastAPI"    src="https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white">
+  <img alt="React"      src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white">
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-pgvector-4169E1?logo=postgresql&logoColor=white">
+  <img alt="Docker"     src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white">
+  <img alt="License"    src="https://img.shields.io/badge/License-MIT-22C55E">
+</p>
 
-Upload filings, chat with them, run DCF valuations, ratio analysis, peer comparison,
-news sentiment and portfolio analytics — all in one beautiful, dark-mode research workspace.
+## Overview
 
-![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)
-![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white)
-![Tailwind](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss&logoColor=white)
-![Postgres](https://img.shields.io/badge/PostgreSQL-pgvector-4169E1?logo=postgresql&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-22C55E)
+The platform is organised around two complementary disciplines.
 
-</div>
+**Document intelligence.** Filings such as 10-Ks, 10-Qs, and annual reports are
+parsed, segmented into overlapping passages, embedded, and indexed for semantic
+retrieval. Questions are answered strictly from the indexed text, and every
+response carries page-level citations so that each assertion remains traceable to
+its source. This constraint is deliberate: it prevents the model from speculating
+beyond the document and keeps the analysis defensible.
 
----
+**Quantitative analysis.** A deterministic finance engine computes intrinsic value
+through a discounted cash-flow model (with terminal value and a two-dimensional
+sensitivity surface), evaluates a battery of liquidity, profitability, leverage,
+and valuation ratios against rule-of-thumb benchmarks, benchmarks a company against
+its peers, and surfaces concentration and rebalancing signals across a portfolio.
 
-## ✨ Features
+The system is engineered to operate end-to-end without external dependencies. In
+the absence of a language-model provider or a database server, it degrades
+gracefully to SQLite, a local embedding model, and a curated reference dataset,
+preserving full functionality for evaluation. Supplying API credentials promotes
+it to live inference and market data without any code change.
 
-| | Feature | What it does |
-|---|---|---|
-| 📄 | **Filing upload & indexing** | Drop a 10-K / annual report (PDF or text). It's parsed, chunked, embedded and indexed for semantic search. |
-| 💬 | **Chat with filings** | Ask questions in plain English. Answers are **grounded in the document** with page-level citations (RAG). |
-| 📝 | **Earnings / filing summaries** | Auto-generated executive summary + key highlights for every uploaded document. |
-| 🧮 | **DCF valuation** | Full discounted-cash-flow engine with adjustable growth, WACC, terminal growth — intrinsic value, upside %, and a sensitivity grid. |
-| ⚖️ | **Ratio analysis** | Liquidity, profitability, leverage, efficiency & valuation ratios scored against benchmarks into a 0–100 health score. |
-| 👥 | **Competitor comparison** | Side-by-side peer benchmarking on valuation, margins, returns and leverage with charts. |
-| 📰 | **News sentiment** | Headline feed with lexicon-based sentiment scoring and an AI tape summary. |
-| 💼 | **Portfolio recommendations** | Live valuation, allocation breakdown and rule-based concentration / rebalancing advice. |
-| 🔐 | **Authentication** | JWT auth (register / login), per-user data isolation. |
+## Capabilities
 
-> **Zero-config demo mode:** every feature works out of the box with **no API keys** and **no Postgres** — the app falls back to SQLite, a local embedding model, deterministic analyst text and a curated sample dataset. Add keys to go fully live.
+| Domain | Description |
+|---|---|
+| Filing ingestion | Parses PDF and text filings, segments them into citable passages, embeds each passage, and persists the index. |
+| Conversational analysis | Answers questions against the indexed corpus using retrieval-augmented generation, returning page-level citations for provenance. |
+| Filing summaries | Produces an executive summary and a set of salient highlights for each uploaded document. |
+| Intrinsic valuation | A discounted cash-flow model with configurable growth, discount rate, and terminal growth, plus a WACC × terminal-growth sensitivity grid. |
+| Ratio diagnostics | Computes liquidity, profitability, leverage, efficiency, and valuation ratios and consolidates them into a 0–100 financial-health score. |
+| Peer benchmarking | Compares a target against its peers across valuation multiples, margins, returns, and leverage. |
+| News sentiment | Aggregates recent headlines and scores tone with a transparent lexicon, accompanied by a narrative summary. |
+| Portfolio analytics | Marks holdings to market, derives allocation and return, and issues rule-based concentration and rebalancing guidance. |
+| Authentication | Stateless JWT authentication with per-user data isolation. |
 
----
-
-## 🧱 Tech stack
-
-**Frontend** — React 18 · TypeScript · Vite · Tailwind CSS · Recharts · React Router · Lucide icons
-**Backend** — FastAPI · SQLAlchemy 2 · Pydantic v2 · JWT (python-jose + passlib)
-**AI** — Provider-agnostic LLM layer (**Anthropic Claude** / **OpenAI**) · RAG · vector similarity search
-**Data** — PostgreSQL + pgvector (prod) / SQLite (dev) · yfinance · NewsAPI (optional)
-**Infra** — Docker & docker-compose · Nginx · GitHub Actions CI
-
----
-
-## 🏗️ Architecture
+## Architecture
 
 ```
-┌─────────────────┐     REST / JWT      ┌──────────────────────┐
-│  React + Vite   │ ──────────────────► │   FastAPI backend    │
-│  (Nginx in prod)│ ◄────────────────── │                      │
-└─────────────────┘                     │  ├─ auth (JWT)       │
-                                        │  ├─ documents (RAG)  │
-                                        │  ├─ chat             │
-                                        │  ├─ valuation (DCF)  │
-                                        │  ├─ ratios           │
-   ┌───────────────┐                    │  ├─ competitors      │
-   │ LLM provider  │ ◄───── services ───┤  ├─ sentiment        │
-   │ Claude/OpenAI │                    │  └─ portfolio        │
-   └───────────────┘                    └──────────┬───────────┘
-                                                   │ SQLAlchemy
-                                        ┌──────────▼───────────┐
-                                        │ PostgreSQL + pgvector │
-                                        │   (or SQLite in dev)  │
-                                        └──────────────────────┘
+┌──────────────────┐      HTTPS / JWT       ┌─────────────────────────┐
+│  React + Vite    │ ─────────────────────► │     FastAPI service     │
+│  (Nginx in prod) │ ◄───────────────────── │                         │
+└──────────────────┘                        │  auth · documents       │
+                                            │  chat · valuation       │
+        ┌────────────────────┐              │  ratios · competitors   │
+        │  LLM provider       │ ◄── service ─┤  sentiment · portfolio  │
+        │  (Anthropic/OpenAI) │   layer      └────────────┬────────────┘
+        └────────────────────┘                           │ SQLAlchemy
+                                              ┌───────────▼────────────┐
+                                              │  PostgreSQL + pgvector  │
+                                              │   (SQLite in dev)       │
+                                              └─────────────────────────┘
 ```
 
----
+The backend exposes a versioned REST API. A provider-agnostic service layer
+abstracts language-model access behind a single interface, so the same code path
+serves Anthropic, OpenAI, or the offline fallback. Persistence is handled through
+SQLAlchemy, allowing the identical schema to run on SQLite during development and
+PostgreSQL with `pgvector` in production. The frontend is a single-page React
+application served statically through Nginx.
 
-## 🚀 Quickstart
+## Technology
 
-### Option A — Local (no Docker, no keys)
+- **Backend** — FastAPI, SQLAlchemy 2, Pydantic v2, JWT (python-jose, passlib).
+- **Frontend** — React 18, TypeScript, Vite, Tailwind CSS, Recharts.
+- **Data and AI** — PostgreSQL with `pgvector` (SQLite in development), a
+  retrieval-augmented pipeline, and a provider-agnostic LLM layer.
+- **Market and news data** — yfinance and an optional news provider, each with a
+  deterministic offline fallback.
+- **Infrastructure** — Docker Compose, Nginx, and a GitHub Actions pipeline.
 
-**1. Backend**
+## Getting started
+
+### Prerequisites
+
+Python 3.12+ and Node.js 20+. Docker is optional and only required for the
+containerised workflow.
+
+### Local development
+
+Start the API:
+
 ```bash
 cd backend
-python3 -m venv .venv && source .venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-python -m app.seed          # creates demo@fra.ai / demo12345 + a sample portfolio
+python -m app.seed
 uvicorn app.main:app --reload --port 8000
 ```
-API docs at **http://localhost:8000/docs**
 
-**2. Frontend** (new terminal)
+The interactive API documentation is then available at `http://localhost:8000/docs`.
+
+In a separate terminal, start the web client:
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-App at **http://localhost:5173** — log in with **demo@fra.ai / demo12345**.
 
-### Option B — Docker (full stack: Postgres + pgvector + API + web)
+Open `http://localhost:5173` and sign in with the seeded account
+(`demo@fra.ai` / `demo12345`).
+
+### Containerised deployment
 
 ```bash
-cp .env.example .env        # optional: add your API keys
+cp .env.example .env   # optionally add provider credentials
 docker compose up --build
 ```
-- Web → http://localhost:5173
-- API → http://localhost:8000/docs
 
-> The repo also ships a `Makefile`: `make install`, `make backend`, `make frontend`, `make seed`, `make test`, `make docker-up`.
+This provisions PostgreSQL with `pgvector`, the API, and the web client. A
+`Makefile` provides equivalent shortcuts: `make install`, `make backend`,
+`make frontend`, `make seed`, `make test`, and `make docker-up`.
 
----
+## Configuration
 
-## 🔑 Configuration
+Configuration is read from environment variables; copy `.env.example` to `.env`
+to begin. The most relevant settings are:
 
-Copy `.env.example` → `.env`. Key variables:
-
-| Variable | Default | Notes |
+| Variable | Default | Purpose |
 |---|---|---|
-| `DATABASE_URL` | `sqlite:///./financial_agent.db` | Swap for Postgres in prod |
-| `SECRET_KEY` | _change me_ | `openssl rand -hex 32` |
-| `LLM_PROVIDER` | `demo` | `anthropic` · `openai` · `demo` |
-| `ANTHROPIC_API_KEY` | — | enables Claude (`claude-sonnet-4-6`) |
-| `OPENAI_API_KEY` | — | enables GPT + OpenAI embeddings |
-| `NEWSAPI_KEY` | — | live news; falls back to samples |
-| `VITE_API_URL` | `http://localhost:8000` | frontend → backend URL |
+| `DATABASE_URL` | SQLite | Connection string; use PostgreSQL in production. |
+| `SECRET_KEY` | placeholder | JWT signing secret (`openssl rand -hex 32`). |
+| `LLM_PROVIDER` | `demo` | Selects `anthropic`, `openai`, or the offline fallback. |
+| `ANTHROPIC_API_KEY` | — | Enables Anthropic inference. |
+| `OPENAI_API_KEY` | — | Enables OpenAI inference and embeddings. |
+| `NEWSAPI_KEY` | — | Enables live news retrieval; otherwise sample data is used. |
+| `VITE_API_URL` | `http://localhost:8000` | API base URL consumed by the client. |
 
-If no LLM key is set, the app runs in **demo mode** with deterministic analyst-style output. If no OpenAI key is set, a built-in local hashing embedding powers semantic search.
+When no provider key is configured, the application runs in its offline mode with
+deterministic output. When no embedding provider is available, a local embedding
+model powers semantic retrieval.
 
----
-
-## 🧪 Tests
+## Testing
 
 ```bash
-cd backend && source .venv/bin/activate
-pytest -q
+cd backend
+source .venv/bin/activate
+pytest
 ```
-Covers the DCF math, ratio computations, auth flow, filing upload + RAG chat, and every analytics endpoint.
 
----
+The suite covers the valuation mathematics, ratio computations, the authentication
+flow, filing ingestion with retrieval-augmented chat, and each analytical endpoint.
 
-## 📡 API overview
+## API reference
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/api/auth/register` · `/api/auth/login` | Auth |
-| `GET/POST/DELETE` | `/api/documents` | Upload & manage filings |
-| `POST` | `/api/chat/ask` | Grounded Q&A with citations |
-| `POST` | `/api/valuation/dcf` | DCF valuation (+ `/sensitivity`) |
-| `POST` | `/api/ratios` | Ratio analysis + health score |
-| `POST` | `/api/competitors` | Peer comparison |
-| `POST` | `/api/sentiment` | News sentiment |
-| `GET/POST` | `/api/portfolio/*` | Holdings & recommendations |
+| `POST` | `/api/auth/register`, `/api/auth/login` | Account creation and authentication. |
+| `GET`, `POST`, `DELETE` | `/api/documents` | Filing management. |
+| `POST` | `/api/chat/ask` | Cited question answering over filings. |
+| `POST` | `/api/valuation/dcf` | Discounted cash-flow valuation and sensitivity. |
+| `POST` | `/api/ratios` | Ratio analysis and health score. |
+| `POST` | `/api/competitors` | Peer benchmarking. |
+| `POST` | `/api/sentiment` | News sentiment analysis. |
+| `GET`, `POST` | `/api/portfolio/*` | Holdings and recommendations. |
 
-Full interactive docs (Swagger UI) at `/docs`.
+Complete, interactive documentation is available at `/docs`.
 
----
+## Deployment
 
-## ☁️ Deployment
+The backend is a stateless container suitable for any orchestrator (for example
+AWS ECS or Fargate, Fly.io, Render, or Railway). In production, point
+`DATABASE_URL` at a managed PostgreSQL instance with the `pgvector` extension
+enabled and provide `SECRET_KEY` and the relevant provider credentials. The
+frontend compiles to static assets that can be served from a CDN or the bundled
+Nginx image; build it with `VITE_API_URL` set to the public API address.
+Continuous integration runs the backend test suite and a production build of the
+client on every push.
 
-- **Backend** → any container host (AWS ECS/Fargate, Fly.io, Render, Railway). Set `DATABASE_URL` to a managed Postgres (RDS) with the `pgvector` extension, plus `SECRET_KEY` and your LLM key.
-- **Frontend** → static host (S3 + CloudFront, Vercel, Netlify) — build with `VITE_API_URL` pointing at the API. The provided multi-stage `Dockerfile` serves it via Nginx.
-- **CI** → GitHub Actions runs backend tests + frontend build on every push (`.github/workflows/ci.yml`).
+## Disclaimer
 
----
+This project is intended for educational and research purposes. It does not
+constitute financial advice. All valuations, ratios, and recommendations are model
+outputs and should be independently verified before any decision is made.
 
-## ⚠️ Disclaimer
+## License
 
-This project is for **educational and research purposes only**. Nothing here is financial advice.
-Valuations, ratios and recommendations are model outputs — always do your own due diligence.
-
-## 📄 License
-
-MIT © Akshat Gupta
+Released under the MIT License. Copyright © 2026 Akshat Gupta.
