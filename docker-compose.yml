@@ -51,18 +51,16 @@ services:
     volumes:
       - uploads:/app/uploads
 
-  # NOTE: the web client is being migrated to Next.js (see web/ once added).
-  # Until then the legacy Vite client builds from ./frontend.
-  frontend:
+  web:
     build:
-      context: ./frontend
+      context: ./web
       args:
-        VITE_API_URL: http://localhost:8000
-    container_name: atlas_frontend
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    container_name: atlas_web
     depends_on:
       - backend
     ports:
-      - "5173:80"
+      - "3000:3000"
 
 volumes:
   pgdata:

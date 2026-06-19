@@ -75,18 +75,20 @@ The backend exposes a versioned REST API. A provider-agnostic service layer
 abstracts language-model access behind a single interface, so the same code path
 serves Anthropic, OpenAI, or the offline fallback. Persistence is handled through
 SQLAlchemy, allowing the identical schema to run on SQLite during development and
-PostgreSQL with `pgvector` in production. The frontend is a single-page React
-application served statically through Nginx.
+PostgreSQL with `pgvector` in production. The web client is a Next.js (App Router)
+application with a command-palette-driven, information-dense interface.
 
 ## Technology
 
-- **Backend** — FastAPI, SQLAlchemy 2, Pydantic v2, JWT (python-jose, passlib).
-- **Frontend** — React 18, TypeScript, Vite, Tailwind CSS, Recharts.
-- **Data and AI** — PostgreSQL with `pgvector` (SQLite in development), a
+- **Backend** — FastAPI, SQLAlchemy 2, Pydantic v2, JWT (python-jose, passlib),
+  repository-pattern data access, Redis cache, structured logging.
+- **Frontend** — Next.js 14 (App Router), TypeScript, Tailwind CSS, TanStack
+  Query, Zustand, Framer Motion, Recharts, and a ⌘K command palette.
+- **Data and AI** — PostgreSQL with `pgvector` (SQLite in development), Redis, a
   retrieval-augmented pipeline, and a provider-agnostic LLM layer.
 - **Market and news data** — yfinance and an optional news provider, each with a
   deterministic offline fallback.
-- **Infrastructure** — Docker Compose, Nginx, and a GitHub Actions pipeline.
+- **Infrastructure** — Docker Compose, GitHub Actions CI, structured logging.
 
 ## Getting started
 
@@ -110,16 +112,17 @@ uvicorn app.main:app --reload --port 8000
 
 The interactive API documentation is then available at `http://localhost:8000/docs`.
 
-In a separate terminal, start the web client:
+In a separate terminal, start the web client (Next.js):
 
 ```bash
-cd frontend
+cd web
 npm install
 npm run dev
 ```
 
-Open `http://localhost:5173` and sign in with the seeded account
-(`demo@fra.ai` / `demo12345`).
+Open `http://localhost:3000` and sign in with the seeded account
+(`demo@fra.ai` / `demo12345`). Tip: press `⌘K` / `Ctrl+K` anywhere for the
+command palette.
 
 ### Containerised deployment
 
