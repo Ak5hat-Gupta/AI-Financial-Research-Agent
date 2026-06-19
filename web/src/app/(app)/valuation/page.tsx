@@ -7,20 +7,28 @@ import { FcfArea } from "@/components/charts";
 import { money, num, pct } from "@/lib/format";
 import type { DCF } from "@/lib/types";
 
+interface Sensitivity { waccs: number[]; terminal_growths: number[]; rows: { wacc: number; values: (number | null)[] }[]; }
+
 const D = { growth_rate: 0.1, terminal_growth: 0.025, discount_rate: 0.09, projection_years: 5 };
 
 export default function Valuation() {
   const [ticker, setTicker] = useState("AAPL");
   const [a, setA] = useState(D);
   const [res, setRes] = useState<DCF | null>(null);
+  const [sens, setSens] = useState<Sensitivity | null>(null);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
   const run = useCallback(async (tk: string, asm: typeof D) => {
     if (!tk.trim()) return;
     setLoading(true); setErr("");
-    try { setRes((await api.post<DCF>("/valuation/dcf?live=false", { ticker: tk, ...asm })).data); }
-    catch (x) { setErr(apiErr(x, "Valuation failed")); } finally { setLoading(false); }
+    try {
+      const [dcf, grid] = await Promise.all([
+        api.post<DCF>("/valuation/dcf?live=false", { ticker: tk, ...asm }),
+        api.post<Sensitivity>("/valuation/dcf/sensitivity?live=false", { ticker: tk, ...asm }),
+      ]);
+      setRes(dcf.data); setSens(grid.data);
+    } catch (x) { setErr(apiErr(x, "Valuation failed")); } finally { setLoading(false); }
   }, []);
 
   useEffect(() => {
@@ -71,11 +79,52 @@ export default function Valuation() {
                 </Card>
                 <Card><div className="mb-3 flex items-center gap-2"><Sparkles size={16} className="text-brand" /><h3 className="font-semibold">Commentary</h3></div><p className="text-sm leading-relaxed text-ink-muted">{res.commentary}</p></Card>
               </div>
+              {sens && <Heatmap sens={sens} price={res.current_price} />}
             </>
           )}
         </div>
       </div>
     </div>
+  );
+}
+
+function Heatmap({ sens, price }: { sens: Sensitivity; price: number | null }) {
+  const all = sens.rows.flatMap((r) => r.values.filter((x): x is number => x != null));
+  const lo = Math.min(...all), hi = Math.max(...all);
+  const color = (v: number | null) => {
+    if (v == null) return "#16191F";
+    if (price) {
+      const d = (v - price) / price; // relative to market price
+      const t = Math.max(-0.3, Math.min(0.3, d)) / 0.3;
+      return t >= 0 ? `rgba(16,185,129,${0.12 + t * 0.5})` : `rgba(244,63,94,${0.12 + -t * 0.5})`;
+    }
+    const t = hi === lo ? 0.5 : (v - lo) / (hi - lo);
+    return `rgba(16,185,129,${0.12 + t * 0.5})`;
+  };
+  return (
+    <Card>
+      <h3 className="mb-1 font-semibold">Sensitivity — fair value / share</h3>
+      <p className="mb-4 text-xs text-ink-faint">Rows: discount rate (WACC) · Columns: terminal growth{price ? " · green = above current price" : ""}</p>
+      <div className="overflow-x-auto">
+        <table className="w-full text-center text-xs nums">
+          <thead>
+            <tr><th className="p-2 text-ink-faint">WACC ＼ g</th>{sens.terminal_growths.map((g) => <th key={g} className="p-2 font-medium text-ink-muted">{(g * 100).toFixed(2)}%</th>)}</tr>
+          </thead>
+          <tbody>
+            {sens.rows.map((r) => (
+              <tr key={r.wacc}>
+                <td className="p-2 font-medium text-ink-muted">{(r.wacc * 100).toFixed(1)}%</td>
+                {r.values.map((v, i) => (
+                  <td key={i} className="p-2" style={{ background: color(v) }}>
+                    <span className="font-semibold text-ink">{v == null ? "—" : `$${v.toFixed(0)}`}</span>
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Card>
   );
 }
 
