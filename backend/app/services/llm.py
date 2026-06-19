@@ -30,7 +30,7 @@ class LLMClient:
 
     @property
     def is_live(self) -> bool:
-        return self.provider in {"anthropic", "openai"}
+        return self.provider in {"anthropic", "openai", "ollama"}
 
     # ---- providers -----------------------------------------------------
     def _anthropic(self, system: str, prompt: str, max_tokens: int) -> str:
@@ -67,20 +67,14 @@ class LLMClient:
         response = client.chat(
             model=settings.ollama_model,
             messages=[
-                {
-                    "role": "system",
-                    "content": system,
-                },
-                {
-                    "role": "user",
-                    "content": prompt,
-                },
+                {"role": "system", "content": system},
+                {"role": "user", "content": prompt},
             ],
+            options={"num_predict": max_tokens},
         )
+        return (response["message"]["content"] or "").strip()
 
-        return response["message"]["content"]
-
-   # ---- offline fallback ---------------------------------------------
+    # ---- offline fallback ---------------------------------------------
     def _demo(self, system: str, prompt: str) -> str:
         """Deterministic, context-aware fallback that reads like an analyst note."""
         excerpt = prompt.strip().splitlines()
@@ -92,8 +86,9 @@ class LLMClient:
         head = question or (excerpt[0][:160] if excerpt else "the request")
         return textwrap.dedent(
             f"""\
-            **Analyst note (demo mode).** Connect an Anthropic or OpenAI key to get
-            fully live reasoning. Based on the supplied context, here is a structured take:
+            **Analyst note (demo mode).** Run a local Ollama model, or connect an
+            Anthropic or OpenAI key, for fully live reasoning. Based on the supplied
+            context, here is a structured take:
 
             • **Read on "{head}":** the provided filing context contains the relevant
               disclosures to answer this. Key drivers center on revenue mix, margin

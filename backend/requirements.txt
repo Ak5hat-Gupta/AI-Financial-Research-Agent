@@ -1,83 +1,43 @@
-alembic==1.14.0
-annotated-types==0.7.0
-anthropic==0.42.0
-anyio==4.14.0
-bcrypt==4.0.1
-beautifulsoup4==4.15.0
-certifi==2026.6.17
-cffi==2.0.0
-chardet==7.4.3
-charset-normalizer==3.4.7
-click==8.4.1
-cryptography==49.0.0
-distro==1.9.0
-dnspython==2.8.0
-ecdsa==0.19.2
-email_validator==2.2.0
+# ---- Web framework ----
 fastapi==0.115.6
-frozendict==2.4.7
-grpcio==1.81.1
-grpcio-tools==1.81.1
-h11==0.16.0
-h2==4.3.0
-hpack==4.1.0
-html5lib==1.1
-httpcore==1.0.9
-httptools==0.8.0
-httpx==0.28.1
-hyperframe==6.1.0
-idna==3.18
-iniconfig==2.3.0
-jiter==0.15.0
-lxml==6.1.1
-Mako==1.3.12
-MarkupSafe==3.0.3
-multitasking==0.0.13
-neo4j==5.27.0
-numpy==2.4.6
-ollama==0.6.2
-openai==1.59.6
-packaging==26.2
-pandas==3.0.3
-passlib==1.7.4
-peewee==4.1.0
-pillow==12.2.0
-platformdirs==4.10.0
-pluggy==1.6.0
-portalocker==2.10.1
-protobuf==6.33.6
-psycopg2-binary==2.9.10
-pyasn1==0.6.3
-pycparser==3.0
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+
+# ---- Data / ORM ----
+SQLAlchemy==2.0.36
+psycopg2-binary==2.9.10        # Postgres driver (Docker / production)
 pydantic==2.10.4
 pydantic-settings==2.7.1
-pydantic_core==2.27.2
-pypdf==5.1.0
-pytest==8.3.4
-python-dateutil==2.9.0.post0
-python-dotenv==1.2.2
-python-jose==3.3.0
-python-multipart==0.0.20
-pytz==2026.2
-PyYAML==6.0.3
-qdrant-client==1.12.1
+email-validator==2.2.0
+
+# ---- Auth ----
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1                   # pinned <4.1 for passlib 1.7.4 compatibility
+
+# ---- Cache / sessions / workers ----
 redis==5.2.1
-reportlab==4.2.5
-requests==2.34.2
 rq==2.1.0
-rsa==4.9.1
-setuptools==82.0.1
-six==1.17.0
-sniffio==1.3.1
-soupsieve==2.8.4
-SQLAlchemy==2.0.36
-starlette==0.41.3
-tqdm==4.68.3
-typing_extensions==4.15.0
-urllib3==2.7.0
-uvicorn==0.34.0
-uvloop==0.22.1
-watchfiles==1.2.0
-webencodings==0.5.1
-websockets==16.0
+
+# ---- Migrations ----
+alembic==1.14.0
+
+# ---- Optional stores (lazy-imported; enabled via env) ----
+neo4j==5.27.0
+qdrant-client==1.12.1
+
+# ---- Documents / reports ----
+pypdf==5.1.0
+reportlab==4.2.5
+
+# ---- LLM providers (all optional at runtime; app falls back to demo mode) ----
+ollama==0.6.2                   # local models via http://localhost:11434
+anthropic==0.42.0
+openai==1.59.6
+
+# ---- Market & news data ----
 yfinance==0.2.51
+httpx==0.28.1
+
+# ---- Tests ----
+pytest==8.3.4

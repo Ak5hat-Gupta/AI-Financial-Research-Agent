@@ -77,7 +77,7 @@ it to live inference and market data without any code change.
 
 The backend exposes a versioned REST API. A provider-agnostic service layer
 abstracts language-model access behind a single interface, so the same code path
-serves Anthropic, OpenAI, or the offline fallback. Persistence is handled through
+serves a local Ollama model, Anthropic, OpenAI, or the offline fallback. Persistence is handled through
 SQLAlchemy, allowing the identical schema to run on SQLite during development and
 PostgreSQL with `pgvector` in production. The web client is a Next.js (App Router)
 application with a command-palette-driven, information-dense interface.
@@ -148,7 +148,8 @@ to begin. The most relevant settings are:
 |---|---|---|
 | `DATABASE_URL` | SQLite | Connection string; use PostgreSQL in production. |
 | `SECRET_KEY` | placeholder | JWT signing secret (`openssl rand -hex 32`). |
-| `LLM_PROVIDER` | `demo` | Selects `anthropic`, `openai`, or the offline fallback. |
+| `LLM_PROVIDER` | `ollama` | Selects `ollama` (local), `anthropic`, `openai`, or the `demo` offline fallback. |
+| `OLLAMA_BASE_URL` / `OLLAMA_MODEL` | `localhost:11434` / `llama3.2` | Local Ollama endpoint and model. |
 | `ANTHROPIC_API_KEY` | — | Enables Anthropic inference. |
 | `OPENAI_API_KEY` | — | Enables OpenAI inference and embeddings. |
 | `NEWSAPI_KEY` | — | Enables live news retrieval; otherwise sample data is used. |
