@@ -50,8 +50,12 @@ it to live inference and market data without any code change.
 | Ratio diagnostics | Computes liquidity, profitability, leverage, efficiency, and valuation ratios and consolidates them into a 0–100 financial-health score. |
 | Peer benchmarking | Compares a target against its peers across valuation multiples, margins, returns, and leverage. |
 | News sentiment | Aggregates recent headlines and scores tone with a transparent lexicon, accompanied by a narrative summary. |
+| Investment memos | Composes an institutional, ten-section memo with a Buy/Hold/Sell rating, price target, and one-click PDF export. |
+| Earnings-call analysis | Scores tone, estimates management confidence, and ranks discussed topics from a transcript. |
+| Knowledge graph | Interactive company / sector / peer graph (Neo4j-ready), explorable by hops. |
 | Portfolio analytics | Marks holdings to market, derives allocation and return, and issues rule-based concentration and rebalancing guidance. |
-| Authentication | Stateless JWT authentication with per-user data isolation. |
+| Watchlist & alerts | Tracked tickers with generated daily-update notifications. |
+| Authentication | Stateless JWT plus optional Google / GitHub OAuth; per-user data isolation. |
 
 ## Architecture
 

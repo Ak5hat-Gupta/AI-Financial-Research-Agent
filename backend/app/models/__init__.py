@@ -4,6 +4,7 @@ from app.models.document import Document, DocumentChunk
 from app.models.chat import ChatSession, ChatMessage
 from app.models.analysis import SavedAnalysis
 from app.models.portfolio import PortfolioHolding
+from app.models.watchlist import WatchlistItem, Notification
 
 __all__ = [
     "User",
@@ -13,4 +14,6 @@ __all__ = [
     "ChatMessage",
     "SavedAnalysis",
     "PortfolioHolding",
+    "WatchlistItem",
+    "Notification",
 ]

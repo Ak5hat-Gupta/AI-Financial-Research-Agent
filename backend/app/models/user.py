@@ -27,3 +27,5 @@ class User(Base):
     chat_sessions = relationship("ChatSession", back_populates="owner", cascade="all, delete-orphan")
     analyses = relationship("SavedAnalysis", back_populates="owner", cascade="all, delete-orphan")
     holdings = relationship("PortfolioHolding", back_populates="owner", cascade="all, delete-orphan")
+    watchlist = relationship("WatchlistItem", back_populates="owner", cascade="all, delete-orphan")
+    notifications = relationship("Notification", back_populates="owner", cascade="all, delete-orphan")

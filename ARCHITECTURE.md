@@ -74,10 +74,14 @@ hardened as the AI Research workspace matures.
   rating + target, PDF export) composing fundamentals, ratios, DCF, comps and
   sentiment. *(shipped)* Competitor benchmarking and DCF are live; a DCF
   sensitivity surface is the remaining item.
-- **Phase 3 — Intelligence.** News clustering, earnings-call analysis, and the
-  Neo4j knowledge graph with interactive visualisation.
-- **Phase 4 — Platform.** OAuth (Google, GitHub), watchlists, notifications,
-  background workers, observability, and cloud deployment.
+- **Phase 3 — Intelligence.** *(shipped)* Earnings-call analysis (tone,
+  management confidence, topic frequency) and an interactive knowledge graph
+  (company / sector / peer; Neo4j-ready node-edge shape, derived in-process
+  offline). News sentiment ships from Phase 1.
+- **Phase 4 — Platform.** *(shipped)* OAuth (Google, GitHub; feature-flagged),
+  watchlists with daily-update notifications, dependency-aware health, structured
+  logging, and deployment artifacts (Compose, `render.yaml`, `fly.toml`,
+  `DEPLOY.md`). Background workers remain a future hardening item.
 
 ## Frontend
 

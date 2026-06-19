@@ -1,0 +1,25 @@
+# Fly.io config for the Atlas API. `fly launch` to create the app, then
+# `fly deploy`. Provision Postgres (`fly postgres create`) and set secrets:
+#   fly secrets set SECRET_KEY=... DATABASE_URL=... REDIS_URL=... LLM_PROVIDER=...
+app = "atlas-api"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  ENVIRONMENT = "production"
+  PORT = "8000"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[http_service.checks]]
+  method = "GET"
+  path = "/health"
+  interval = "30s"
+  timeout = "5s"

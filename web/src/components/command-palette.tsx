@@ -1,6 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { Search, TrendingUp, ArrowRight, LayoutDashboard, FileText, MessagesSquare, Briefcase, Users, ScrollText } from "lucide-react";
+import { Search, TrendingUp, ArrowRight, LayoutDashboard, FileText, MessagesSquare, Briefcase, Users, ScrollText, Network, Mic, Eye } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
@@ -10,8 +10,11 @@ const NAV = [
   { label: "Companies", href: "/companies", icon: TrendingUp },
   { label: "Documents", href: "/documents", icon: FileText },
   { label: "AI Research", href: "/research", icon: MessagesSquare },
+  { label: "Earnings Calls", href: "/earnings", icon: Mic },
   { label: "Competitors", href: "/competitors", icon: Users },
+  { label: "Knowledge Graph", href: "/graph", icon: Network },
   { label: "Memos", href: "/memos", icon: ScrollText },
+  { label: "Watchlist", href: "/watchlist", icon: Eye },
   { label: "Portfolio", href: "/portfolio", icon: Briefcase },
 ];
 

@@ -3,11 +3,12 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
-  LayoutDashboard, TrendingUp, FileText, MessagesSquare, Calculator, Users, Briefcase, ScrollText, LogOut, Menu, X, LineChart,
+  LayoutDashboard, TrendingUp, FileText, MessagesSquare, Calculator, Users, Briefcase, ScrollText, Network, Mic, Eye, LogOut, Menu, X, LineChart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/store/auth";
 import { CommandPalette } from "./command-palette";
+import { NotificationsBell } from "./notifications";
 import { Spinner } from "./ui";
 
 const NAV = [
@@ -15,9 +16,12 @@ const NAV = [
   { href: "/companies", label: "Companies", icon: TrendingUp },
   { href: "/documents", label: "Documents", icon: FileText },
   { href: "/research", label: "AI Research", icon: MessagesSquare },
+  { href: "/earnings", label: "Earnings Calls", icon: Mic },
   { href: "/valuation", label: "Valuation", icon: Calculator },
   { href: "/competitors", label: "Competitors", icon: Users },
+  { href: "/graph", label: "Knowledge Graph", icon: Network },
   { href: "/memos", label: "Memos", icon: ScrollText },
+  { href: "/watchlist", label: "Watchlist", icon: Eye },
   { href: "/portfolio", label: "Portfolio", icon: Briefcase },
 ];
 
@@ -70,7 +74,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <button className="cursor-pointer rounded-lg p-2 text-ink-muted hover:bg-surface-overlay/60 lg:hidden" onClick={() => setOpen((v) => !v)} aria-label="Menu">{open ? <X size={20} /> : <Menu size={20} />}</button>
             <h1 className="text-lg font-semibold">{active?.label ?? "Atlas"}</h1>
           </div>
-          <CommandPalette />
+          <div className="flex items-center gap-2"><CommandPalette /><NotificationsBell /></div>
         </header>
         <main className="mx-auto w-full max-w-7xl flex-1 p-4 lg:p-8"><div className="animate-in">{children}</div></main>
       </div>
