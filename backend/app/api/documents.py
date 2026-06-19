@@ -12,7 +12,7 @@ from app.core.deps import get_current_user
 from app.models.document import Document, DocumentChunk
 from app.models.user import User
 from app.schemas.document import DocumentOut, DocumentSummaryOut
-from app.services import pdf_parser
+from app.services import pdf_parser, vectorstore
 from app.services.embeddings import embed_texts
 from app.services.rag import summarize_document
 
@@ -82,17 +82,24 @@ async def upload_document(
         return DocumentOut.model_validate(doc)
 
     embeddings = embed_texts([c.content for c in chunks])
+    rows: list[DocumentChunk] = []
     for ch, emb in zip(chunks, embeddings):
-        db.add(
-            DocumentChunk(
-                document_id=doc.id,
-                chunk_index=ch.index,
-                page=ch.page,
-                content=ch.content,
-                embedding=json.dumps(emb),
-            )
+        row = DocumentChunk(
+            document_id=doc.id,
+            chunk_index=ch.index,
+            page=ch.page,
+            content=ch.content,
+            embedding=json.dumps(emb),
         )
+        rows.append(row)
+        db.add(row)
     db.commit()
+
+    # Mirror embeddings to Qdrant when configured (no-op otherwise).
+    if vectorstore.enabled():
+        vectorstore.upsert_chunks(
+            current.id, doc.id, [(r.id, r.page, json.loads(r.embedding)) for r in rows]
+        )
 
     # Auto-summary.
     try:

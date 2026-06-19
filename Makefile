@@ -24,6 +24,12 @@ web:
 seed:
 	cd backend && . .venv/bin/activate && python -m app.seed
 
+migrate:
+	cd backend && . .venv/bin/activate && alembic upgrade head
+
+worker:
+	cd backend && . .venv/bin/activate && python worker.py
+
 test:
 	cd backend && . .venv/bin/activate && pytest -q
 

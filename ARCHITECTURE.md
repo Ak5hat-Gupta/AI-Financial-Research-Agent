@@ -57,10 +57,10 @@ hardened as the AI Research workspace matures.
 
 | Store | Role | Status |
 |---|---|---|
-| PostgreSQL + pgvector | Relational data and embeddings | Active (SQLite in dev) |
-| Redis | Cache, sessions, rate-limit windows | Active (in-process fallback) |
-| Neo4j | Knowledge graph (companies, people, supply chains) | Phase 3 |
-| Qdrant | Dedicated vector search at scale | Phase 3 |
+| PostgreSQL + pgvector | Relational data and embeddings | Active (SQLite in dev); Alembic migrations |
+| Redis | Cache, sessions, rate-limit windows, RQ job queue | Active (in-process fallback) |
+| Neo4j | Knowledge graph (companies, sectors, peers) | Wired, enabled by `NEO4J_URI` |
+| Qdrant | Dedicated vector search at scale | Wired, enabled by `QDRANT_URL` |
 
 ## Delivery phases
 
@@ -80,8 +80,9 @@ hardened as the AI Research workspace matures.
   offline). News sentiment ships from Phase 1.
 - **Phase 4 — Platform.** *(shipped)* OAuth (Google, GitHub; feature-flagged),
   watchlists with daily-update notifications, dependency-aware health, structured
-  logging, and deployment artifacts (Compose, `render.yaml`, `fly.toml`,
-  `DEPLOY.md`). Background workers remain a future hardening item.
+  logging, deployment artifacts (Compose, `render.yaml`, `fly.toml`, `DEPLOY.md`),
+  Alembic migrations, an RQ background worker (with inline fallback), a DCF
+  sensitivity surface, and optional Neo4j/Qdrant backends wired behind config.
 
 ## Frontend
 

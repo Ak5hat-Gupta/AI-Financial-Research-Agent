@@ -51,4 +51,11 @@ def build_graph(ticker: str, depth: int = 1, live: bool = False) -> dict:
 
     # De-duplicate edges.
     uniq = {(e["source"], e["target"], e["rel"]): e for e in edges}
-    return {"root": f"C:{ticker}", "nodes": list(nodes.values()), "edges": list(uniq.values())}
+    graph = {"root": f"C:{ticker}", "nodes": list(nodes.values()), "edges": list(uniq.values())}
+
+    # Best-effort persistence to Neo4j when configured (never blocks the response).
+    from app.services import neo4j_store
+
+    if neo4j_store.enabled():
+        neo4j_store.sync_graph(graph)
+    return graph

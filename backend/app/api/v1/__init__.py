@@ -6,7 +6,7 @@ package alongside this one, leaving v1 contracts stable.
 """
 from fastapi import APIRouter
 
-from app.api import auth, chat, documents, finance, insights, memo, oauth, portfolio, watchlist
+from app.api import auth, chat, documents, finance, insights, jobs, memo, oauth, portfolio, watchlist
 
 api_router = APIRouter()
 api_router.include_router(auth.router)
@@ -18,5 +18,6 @@ api_router.include_router(memo.router)
 api_router.include_router(insights.router)
 api_router.include_router(watchlist.router)
 api_router.include_router(portfolio.router)
+api_router.include_router(jobs.router)
 
 __all__ = ["api_router"]

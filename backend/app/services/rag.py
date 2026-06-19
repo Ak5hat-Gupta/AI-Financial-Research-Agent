@@ -24,6 +24,17 @@ def retrieve(
     """Return the top-k most relevant chunks for a query."""
     q_emb = embed_text(query)
 
+    # Qdrant path when configured: search returns chunk ids, hydrate from the DB.
+    from app.services import vectorstore
+
+    if vectorstore.enabled():
+        hits = vectorstore.search(owner_id, q_emb, document_id, k)
+        if hits:
+            by_id = {c.id: c for c in db.execute(
+                select(DocumentChunk).where(DocumentChunk.id.in_([h[0] for h in hits]))
+            ).scalars().all()}
+            return [(by_id[i], s) for i, s in hits if i in by_id]
+
     stmt = (
         select(DocumentChunk)
         .join(Document, Document.id == DocumentChunk.document_id)

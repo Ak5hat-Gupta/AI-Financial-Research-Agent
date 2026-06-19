@@ -10,10 +10,23 @@ from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.models.analysis import SavedAnalysis
 from app.models.user import User
+from app.core.tasks import enqueue
 from app.schemas.memo import MemoRequest, MemoResponse
+from app.services.jobs import generate_memo_job
 from app.services.memo import generate_memo, memo_to_pdf
 
 router = APIRouter(prefix="/memo", tags=["memo"])
+
+
+@router.post("/async")
+def create_memo_async(
+    req: MemoRequest,
+    live: bool = Query(default=False),
+    current: User = Depends(get_current_user),
+) -> dict:
+    """Enqueue memo generation on the worker (runs inline if no worker)."""
+    job_id = enqueue(generate_memo_job, req.ticker, current.id, live)
+    return {"job_id": job_id}
 
 
 @router.post("", response_model=MemoResponse)

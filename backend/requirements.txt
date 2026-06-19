@@ -15,8 +15,16 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.0.1                   # pinned <4.1 for passlib 1.7.4 compatibility
 
-# ---- Cache / sessions ----
+# ---- Cache / sessions / workers ----
 redis==5.2.1
+rq==2.1.0
+
+# ---- Migrations ----
+alembic==1.14.0
+
+# ---- Optional stores (lazy-imported; enabled via env) ----
+neo4j==5.27.0
+qdrant-client==1.12.1
 
 # ---- Documents / reports ----
 pypdf==5.1.0
