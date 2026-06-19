@@ -18,6 +18,8 @@ class LLMClient:
     # ---- public API ----------------------------------------------------
     def complete(self, system: str, prompt: str, max_tokens: int = 1024) -> str:
         try:
+            if self.provider == "ollama":
+                return self._ollama(system, prompt, max_tokens)
             if self.provider == "anthropic":
                 return self._anthropic(system, prompt, max_tokens)
             if self.provider == "openai":
@@ -57,7 +59,28 @@ class LLMClient:
         )
         return (resp.choices[0].message.content or "").strip()
 
-    # ---- offline fallback ---------------------------------------------
+    def _ollama(self, system: str, prompt: str, max_tokens: int) -> str:
+        from ollama import Client
+
+        client = Client(host=settings.ollama_base_url)
+
+        response = client.chat(
+            model=settings.ollama_model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": system,
+                },
+                {
+                    "role": "user",
+                    "content": prompt,
+                },
+            ],
+        )
+
+        return response["message"]["content"]
+
+   # ---- offline fallback ---------------------------------------------
     def _demo(self, system: str, prompt: str) -> str:
         """Deterministic, context-aware fallback that reads like an analyst note."""
         excerpt = prompt.strip().splitlines()
