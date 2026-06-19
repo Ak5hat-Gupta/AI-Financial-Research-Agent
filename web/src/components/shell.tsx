@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
-  LayoutDashboard, TrendingUp, FileText, MessagesSquare, Calculator, Users, Briefcase, LogOut, Menu, X, LineChart,
+  LayoutDashboard, TrendingUp, FileText, MessagesSquare, Calculator, Users, Briefcase, ScrollText, LogOut, Menu, X, LineChart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/store/auth";
@@ -17,6 +17,7 @@ const NAV = [
   { href: "/research", label: "AI Research", icon: MessagesSquare },
   { href: "/valuation", label: "Valuation", icon: Calculator },
   { href: "/competitors", label: "Competitors", icon: Users },
+  { href: "/memos", label: "Memos", icon: ScrollText },
   { href: "/portfolio", label: "Portfolio", icon: Briefcase },
 ];
 
