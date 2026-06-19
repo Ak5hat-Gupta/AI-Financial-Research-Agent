@@ -96,27 +96,46 @@ application with a command-palette-driven, information-dense interface.
 
 ## Screenshots
 
-### Login & Dashboard
-The login screen and the home dashboard with portfolio KPIs and market watch.
-![Login](docs/screenshots/01-login.png)
-![Dashboard](docs/screenshots/02-dashboard.png)
+### Dashboard
+Home view with portfolio KPIs, market watch, and quick-access links to all major workflows.
+![Dashboard](docs/screenshots/01-dashboard.png)
 
 ### Company Research
-Deep-dive into any public company with tabs for overview, financials, valuation, competitors, and news.
-![Company Profile](docs/screenshots/03-company.png)
+Searchable universe and detailed company profiles with tabs for overview, financials, valuation, competitors, and news.
+![Companies](docs/screenshots/02-companies.png)
+![Company Detail](docs/screenshots/03-company.png)
 
-### Valuation & Sensitivity
-Run a discounted cash-flow model with live assumption sliders and a WACC × terminal-growth fair-value heatmap.
-![DCF Valuation](docs/screenshots/04-valuation.png)
+### DCF Valuation
+Interactive discounted cash-flow model with live assumption sliders (growth, WACC, terminal growth) and a WACC × terminal-growth fair-value sensitivity heatmap.
+![Valuation & Sensitivity](docs/screenshots/04-valuation.png)
 
 ### Knowledge Graph
-Interactive company/sector/peer graph, explorable by depth. Neo4j-ready shape.
-![Knowledge Graph](docs/screenshots/06-graph.png)
+Interactive company/sector/peer network, explorable by hops. Neo4j-ready node-edge shape.
+![Knowledge Graph](docs/screenshots/05-graph.png)
 
-### Portfolio & Peer Benchmarking
-Manage holdings and visualise allocation; benchmark against competitors with margin and multiple comparisons.
+### AI Research Workspace
+Three-panel interface: interrogate uploaded filings with RAG (left), get cited answers (center), suggestions (right).
+![AI Research](docs/screenshots/06-research.png)
+
+### Investment Memos
+Generate ten-section institutional memos with Buy/Hold/Sell ratings, price targets, and one-click PDF export.
+![Investment Memos](docs/screenshots/07-memos.png)
+
+### Portfolio Management
+Manage holdings, track allocation, and receive rule-based concentration and rebalancing guidance.
 ![Portfolio](docs/screenshots/08-portfolio.png)
+
+### Peer Benchmarking
+Compare against competitors across valuation multiples, margins, returns, and leverage.
 ![Competitors](docs/screenshots/09-competitors.png)
+
+### Watchlist & Notifications
+Track tickers with daily-update notifications (earnings alerts, analyst action, news highlights, insider activity).
+![Watchlist](docs/screenshots/10-watchlist.png)
+
+### Earnings-Call Analysis
+Score tone, estimate management confidence, and rank discussed topics from earnings transcripts.
+![Earnings Analysis](docs/screenshots/11-earnings.png)
 
 ## Getting started
 
