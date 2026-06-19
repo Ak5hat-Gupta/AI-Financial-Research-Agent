@@ -94,6 +94,30 @@ application with a command-palette-driven, information-dense interface.
   deterministic offline fallback.
 - **Infrastructure** — Docker Compose, GitHub Actions CI, structured logging.
 
+## Screenshots
+
+### Login & Dashboard
+The login screen and the home dashboard with portfolio KPIs and market watch.
+![Login](docs/screenshots/01-login.png)
+![Dashboard](docs/screenshots/02-dashboard.png)
+
+### Company Research
+Deep-dive into any public company with tabs for overview, financials, valuation, competitors, and news.
+![Company Profile](docs/screenshots/03-company.png)
+
+### Valuation & Sensitivity
+Run a discounted cash-flow model with live assumption sliders and a WACC × terminal-growth fair-value heatmap.
+![DCF Valuation](docs/screenshots/04-valuation.png)
+
+### Knowledge Graph
+Interactive company/sector/peer graph, explorable by depth. Neo4j-ready shape.
+![Knowledge Graph](docs/screenshots/06-graph.png)
+
+### Portfolio & Peer Benchmarking
+Manage holdings and visualise allocation; benchmark against competitors with margin and multiple comparisons.
+![Portfolio](docs/screenshots/08-portfolio.png)
+![Competitors](docs/screenshots/09-competitors.png)
+
 ## Getting started
 
 ### Prerequisites
