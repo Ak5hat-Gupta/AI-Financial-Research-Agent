@@ -70,8 +70,10 @@ hardened as the AI Research workspace matures.
 - **Phase 1 — Core loop.** Company dashboard, document intelligence
   (upload → parse → embed → index → semantic search), and the three-panel cited
   AI research workspace.
-- **Phase 2 — Analysis.** DCF with sensitivity, competitor benchmarking, and the
-  institutional investment-memo generator with PDF export.
+- **Phase 2 — Analysis.** Institutional investment-memo generator (10 sections,
+  rating + target, PDF export) composing fundamentals, ratios, DCF, comps and
+  sentiment. *(shipped)* Competitor benchmarking and DCF are live; a DCF
+  sensitivity surface is the remaining item.
 - **Phase 3 — Intelligence.** News clustering, earnings-call analysis, and the
   Neo4j knowledge graph with interactive visualisation.
 - **Phase 4 — Platform.** OAuth (Google, GitHub), watchlists, notifications,
