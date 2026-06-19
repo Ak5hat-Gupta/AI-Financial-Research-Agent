@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, ArrowRight, LineChart, ShieldCheck, TrendingUp, Sparkles } from "lucide-react";
 import { useAuth } from "@/store/auth";
-import { apiErr } from "@/lib/api";
+import { api, apiErr, V1, setToken } from "@/lib/api";
 import { ErrorNote, Spinner } from "@/components/ui";
 
 export default function Login() {
@@ -14,6 +14,13 @@ export default function Login() {
   const [password, setPassword] = useState("demo12345");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
+  const [providers, setProviders] = useState<{ google: boolean; github: boolean }>({ google: false, github: false });
+
+  useEffect(() => {
+    const t = new URLSearchParams(window.location.hash.slice(1)).get("token");
+    if (t) { setToken(t); router.push("/dashboard"); }
+    api.get("/auth/oauth/providers").then((r) => setProviders(r.data)).catch(() => {});
+  }, [router]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault(); setErr(""); setLoading(true);
@@ -57,6 +64,15 @@ export default function Login() {
             </div>
             <button className="btn-primary w-full" disabled={loading}>{loading ? <Spinner className="h-4 w-4" /> : <>Sign in <ArrowRight size={16} /></>}</button>
           </form>
+          {(providers.google || providers.github) && (
+            <div className="mt-5">
+              <div className="mb-4 flex items-center gap-3 text-xs text-ink-faint"><span className="h-px flex-1 bg-line" />or continue with<span className="h-px flex-1 bg-line" /></div>
+              <div className="grid grid-cols-2 gap-2">
+                {providers.google && <a href={`${V1}/auth/oauth/google/login`} className="btn-ghost">Google</a>}
+                {providers.github && <a href={`${V1}/auth/oauth/github/login`} className="btn-ghost">GitHub</a>}
+              </div>
+            </div>
+          )}
           <div className="mt-6 rounded-xl border border-line bg-surface/40 px-4 py-3 text-xs text-ink-muted">Demo — <span className="nums">demo@fra.ai / demo12345</span></div>
           <p className="mt-6 text-center text-sm text-ink-muted">No account? <Link href="/register" className="font-medium text-brand hover:underline">Create one</Link></p>
         </div>
