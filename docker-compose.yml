@@ -1,32 +1,47 @@
 services:
   db:
     image: pgvector/pgvector:pg16
-    container_name: fra_db
+    container_name: atlas_db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: financial_agent
+      POSTGRES_DB: atlas
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d financial_agent"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d atlas"]
       interval: 5s
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7-alpine
+    container_name: atlas_redis
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   backend:
     build: ./backend
-    container_name: fra_backend
+    container_name: atlas_backend
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       ENVIRONMENT: production
-      DATABASE_URL: postgresql+psycopg2://postgres:postgres@db:5432/financial_agent
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@db:5432/atlas
+      REDIS_URL: redis://redis:6379/0
       SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
-      CORS_ORIGINS: http://localhost:5173,http://localhost:4173,http://localhost
+      CORS_ORIGINS: http://localhost:3000,http://localhost:5173,http://localhost
       LLM_PROVIDER: ${LLM_PROVIDER:-demo}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
@@ -36,16 +51,16 @@ services:
     volumes:
       - uploads:/app/uploads
 
-  frontend:
+  web:
     build:
-      context: ./frontend
+      context: ./web
       args:
-        VITE_API_URL: http://localhost:8000
-    container_name: fra_frontend
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    container_name: atlas_web
     depends_on:
       - backend
     ports:
-      - "5173:80"
+      - "3000:3000"
 
 volumes:
   pgdata:

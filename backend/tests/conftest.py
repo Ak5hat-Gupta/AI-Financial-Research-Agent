@@ -7,6 +7,8 @@ _db_fd, _db_path = tempfile.mkstemp(suffix=".db")
 os.environ["DATABASE_URL"] = f"sqlite:///{_db_path}"
 os.environ["SECRET_KEY"] = "test-secret-key"
 os.environ["LLM_PROVIDER"] = "demo"
+os.environ["RATE_LIMIT_ENABLED"] = "false"
+os.environ["LOG_JSON"] = "false"
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -33,7 +35,7 @@ def client():
 def auth_client(client):
     email = f"user_{os.urandom(4).hex()}@test.io"
     resp = client.post(
-        "/api/auth/register",
+        "/api/v1/auth/register",
         json={"email": email, "password": "supersecret123", "full_name": "Tester"},
     )
     assert resp.status_code == 201, resp.text
