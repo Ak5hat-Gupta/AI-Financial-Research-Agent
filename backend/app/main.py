@@ -22,6 +22,12 @@ log = get_logger("atlas.app")
 async def lifespan(app: FastAPI):
     configure_logging()
     init_db()
+    # Auto-seed demo user on first startup
+    try:
+        from app.seed import main as seed_main
+        seed_main()
+    except Exception as exc:
+        log.warning("seed skipped", extra={"error": str(exc)})
     log.info(
         "atlas started",
         extra={
