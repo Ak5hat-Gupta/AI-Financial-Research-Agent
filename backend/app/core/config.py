@@ -9,7 +9,6 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import List
 
-from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -50,11 +49,12 @@ class Settings(BaseSettings):
     qdrant_url: str = ""
 
     # ---- CORS ----
-    cors_origins: List[str] = [
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://localhost:4173",
-    ]
+    # Accepts a comma-separated string so env vars work without JSON quoting.
+    cors_origins: str = "http://localhost:3000,http://localhost:5173,http://localhost:4173"
+
+    @property
+    def cors_origins_list(self) -> List[str]:
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
     # ---- LLM ----
     llm_provider: str = "ollama"  # ollama | anthropic | openai | demo
@@ -88,13 +88,6 @@ class Settings(BaseSettings):
 
     # ---- Caching ----
     cache_ttl_seconds: int = 300
-
-    @field_validator("cors_origins", mode="before")
-    @classmethod
-    def _split_origins(cls, v):
-        if isinstance(v, str):
-            return [o.strip() for o in v.split(",") if o.strip()]
-        return v
 
     @property
     def is_production(self) -> bool:
