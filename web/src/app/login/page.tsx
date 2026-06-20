@@ -46,7 +46,16 @@ export default function Login() {
             <li className="flex items-start gap-3"><span className="mt-0.5 grid h-7 w-7 place-items-center rounded-lg bg-brand/15 text-brand"><ShieldCheck size={16} /></span>Sentiment and portfolio risk intelligence</li>
           </ul>
         </div>
-        <div className="relative text-xs text-ink-faint">FastAPI · Next.js · PostgreSQL · pgvector · Redis</div>
+        <div className="relative space-y-2">
+          <div className="text-xs text-ink-faint">FastAPI · Next.js · PostgreSQL · pgvector · Redis</div>
+          <div className="group flex items-center gap-2">
+            <span className="h-px w-8 bg-gradient-to-r from-transparent to-brand/40 transition-all duration-500 group-hover:w-12 group-hover:to-brand/70" />
+            <a href="https://github.com/Ak5hat-Gupta" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-ink-muted to-brand bg-clip-text font-mono text-xs tracking-wide text-transparent transition-all duration-500 hover:from-brand hover:to-info">
+              Built by Akshat Gupta
+            </a>
+            <span className="h-px w-8 bg-gradient-to-l from-transparent to-brand/40 transition-all duration-500 group-hover:w-12 group-hover:to-brand/70" />
+          </div>
+        </div>
       </div>
       <div className="flex items-center justify-center p-6 sm:p-10">
         <div className="w-full max-w-sm">
@@ -75,6 +84,11 @@ export default function Login() {
           )}
           <div className="mt-6 rounded-xl border border-line bg-surface/40 px-4 py-3 text-xs text-ink-muted">Demo — <span className="nums">demo@fra.ai / demo12345</span></div>
           <p className="mt-6 text-center text-sm text-ink-muted">No account? <Link href="/register" className="font-medium text-brand hover:underline">Create one</Link></p>
+          <div className="mt-8 flex justify-center lg:hidden">
+            <a href="https://github.com/Ak5hat-Gupta" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-ink-muted to-brand bg-clip-text font-mono text-xs tracking-wide text-transparent transition-all duration-500 hover:from-brand hover:to-info">
+              Built by Akshat Gupta
+            </a>
+          </div>
         </div>
       </div>
     </div>

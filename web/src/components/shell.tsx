@@ -77,6 +77,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2"><CommandPalette /><NotificationsBell /></div>
         </header>
         <main className="mx-auto w-full max-w-7xl flex-1 p-4 lg:p-8"><div className="animate-in">{children}</div></main>
+        <footer className="border-t border-line px-4 py-3 text-center lg:px-8">
+          <a href="https://github.com/Ak5hat-Gupta" target="_blank" rel="noopener noreferrer" className="font-mono text-[11px] tracking-wide text-ink-faint transition-colors hover:text-brand">
+            Built by Akshat Gupta
+          </a>
+        </footer>
       </div>
     </div>
   );
