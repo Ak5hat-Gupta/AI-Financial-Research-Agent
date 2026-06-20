@@ -1,4 +1,7 @@
-# Render blueprint for Atlas (backend API + web + Postgres + Redis).
+# Render blueprint for Atlas — backend API only.
+# Frontend → deploy separately on Vercel.
+# Postgres → Neon (https://neon.tech) — free, no expiry.
+# Redis → Upstash (https://upstash.com) — free, no expiry.
 # https://render.com/docs/blueprint-spec
 services:
   - type: web
@@ -7,40 +10,17 @@ services:
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     healthCheckPath: /health
+    plan: free
     envVars:
       - key: ENVIRONMENT
         value: production
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        fromDatabase:
-          name: atlas-db
-          property: connectionString
+        sync: false   # paste your Neon connection string
       - key: REDIS_URL
-        fromService:
-          name: atlas-redis
-          type: redis
-          property: connectionString
+        sync: false   # paste your Upstash Redis URL
       - key: LLM_PROVIDER
         value: demo
       - key: CORS_ORIGINS
-        sync: false
-
-  - type: web
-    name: atlas-web
-    runtime: docker
-    dockerfilePath: ./web/Dockerfile
-    dockerContext: ./web
-    envVars:
-      - key: NEXT_PUBLIC_API_URL
-        sync: false
-
-  - type: redis
-    name: atlas-redis
-    ipAllowList: []
-    plan: free
-
-databases:
-  - name: atlas-db
-    plan: free
-    postgresMajorVersion: "16"
+        sync: false   # paste your Vercel web URL after deploying frontend
