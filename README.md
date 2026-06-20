@@ -1,4 +1,4 @@
-# AI Financial Research Agent
+# Atlas — AI Equity Research Platform
 
 A full-stack equity research platform that combines retrieval-augmented document
 analysis with a deterministic quantitative engine. Analysts can upload regulatory
@@ -7,14 +7,18 @@ run discounted cash-flow models, ratio diagnostics, peer benchmarking, news
 sentiment, and portfolio analytics from a single workspace.
 
 <p>
+  <a href="https://ai-financial-research-agent.vercel.app"><img alt="Live Demo" src="https://img.shields.io/badge/Live-Demo-22C55E?logo=vercel&logoColor=white"></a>
   <img alt="Python"     src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white">
   <img alt="FastAPI"    src="https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white">
-  <img alt="React"      src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black">
+  <img alt="Next.js"    src="https://img.shields.io/badge/Next.js-14-000000?logo=next.js&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white">
-  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-pgvector-4169E1?logo=postgresql&logoColor=white">
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white">
   <img alt="Docker"     src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white">
   <img alt="License"    src="https://img.shields.io/badge/License-MIT-22C55E">
 </p>
+
+> **[Try the live demo →](https://ai-financial-research-agent.vercel.app)**
+> Sign up for an account or use the seeded demo credentials (`demo@fra.ai` / `demo12345`). Press `⌘K` / `Ctrl+K` anywhere for the command palette.
 
 ## Overview
 
@@ -61,38 +65,40 @@ it to live inference and market data without any code change.
 
 ```
 ┌──────────────────┐      HTTPS / JWT       ┌─────────────────────────┐
-│  React + Vite    │ ─────────────────────► │     FastAPI service     │
-│  (Nginx in prod) │ ◄───────────────────── │                         │
+│  Next.js (Vercel)│ ─────────────────────► │   FastAPI (Render)      │
+│  App Router      │ ◄───────────────────── │                         │
 └──────────────────┘                        │  auth · documents       │
                                             │  chat · valuation       │
         ┌────────────────────┐              │  ratios · competitors   │
         │  LLM provider       │ ◄── service ─┤  sentiment · portfolio  │
         │  (Anthropic/OpenAI) │   layer      └────────────┬────────────┘
         └────────────────────┘                           │ SQLAlchemy
-                                              ┌───────────▼────────────┐
-                                              │  PostgreSQL + pgvector  │
-                                              │   (SQLite in dev)       │
-                                              └─────────────────────────┘
+                                    ┌────────────────────┼────────────────┐
+                                    │                    │                │
+                              ┌─────▼──────┐    ┌───────▼──────┐  ┌─────▼─────┐
+                              │ PostgreSQL  │    │    Redis     │  │  Workers  │
+                              │  (Neon)     │    │  (Upstash)   │  │   (RQ)    │
+                              └────────────┘    └──────────────┘  └───────────┘
 ```
 
 The backend exposes a versioned REST API. A provider-agnostic service layer
 abstracts language-model access behind a single interface, so the same code path
 serves a local Ollama model, Anthropic, OpenAI, or the offline fallback. Persistence is handled through
 SQLAlchemy, allowing the identical schema to run on SQLite during development and
-PostgreSQL with `pgvector` in production. The web client is a Next.js (App Router)
+PostgreSQL in production. The web client is a Next.js (App Router)
 application with a command-palette-driven, information-dense interface.
 
 ## Technology
 
 - **Backend** — FastAPI, SQLAlchemy 2, Pydantic v2, JWT (python-jose, passlib),
-  repository-pattern data access, Redis cache, structured logging.
+  repository-pattern data access, Redis cache, RQ workers, Alembic migrations, structured logging.
 - **Frontend** — Next.js 14 (App Router), TypeScript, Tailwind CSS, TanStack
   Query, Zustand, Framer Motion, Recharts, and a ⌘K command palette.
-- **Data and AI** — PostgreSQL with `pgvector` (SQLite in development), Redis, a
+- **Data and AI** — PostgreSQL (Neon), Redis (Upstash), a
   retrieval-augmented pipeline, and a provider-agnostic LLM layer.
 - **Market and news data** — yfinance and an optional news provider, each with a
   deterministic offline fallback.
-- **Infrastructure** — Docker Compose, GitHub Actions CI, structured logging.
+- **Infrastructure** — Docker Compose, Vercel (frontend), Render (backend), Neon (Postgres), Upstash (Redis).
 
 ## Screenshots
 
@@ -137,6 +143,15 @@ Track tickers with daily-update notifications (earnings alerts, analyst action, 
 Score tone, estimate management confidence, and rank discussed topics from earnings transcripts.
 ![Earnings Analysis](docs/screenshots/11-earnings.png)
 
+## Live Demo
+
+| Service | URL |
+|---|---|
+| **Frontend** | [ai-financial-research-agent.vercel.app](https://ai-financial-research-agent.vercel.app) |
+| **API Docs** | [atlas-api on Render → /docs](https://ai-financial-research-agent.vercel.app) |
+
+The demo runs in offline mode (`LLM_PROVIDER=demo`) with deterministic output — no API keys required. Sign up for an account or use `demo@fra.ai` / `demo12345`.
+
 ## Getting started
 
 ### Prerequisites
@@ -178,7 +193,7 @@ cp .env.example .env   # optionally add provider credentials
 docker compose up --build
 ```
 
-This provisions PostgreSQL with `pgvector`, the API, and the web client. A
+This provisions PostgreSQL, Redis, the API, and the web client. A
 `Makefile` provides equivalent shortcuts: `make install`, `make backend`,
 `make frontend`, `make seed`, `make test`, and `make docker-up`.
 
@@ -190,17 +205,32 @@ to begin. The most relevant settings are:
 | Variable | Default | Purpose |
 |---|---|---|
 | `DATABASE_URL` | SQLite | Connection string; use PostgreSQL in production. |
+| `REDIS_URL` | — | Redis connection; empty falls back to in-process cache. |
 | `SECRET_KEY` | placeholder | JWT signing secret (`openssl rand -hex 32`). |
 | `LLM_PROVIDER` | `ollama` | Selects `ollama` (local), `anthropic`, `openai`, or the `demo` offline fallback. |
+| `CORS_ORIGINS` | `localhost:3000,...` | Comma-separated allowed origins. |
 | `OLLAMA_BASE_URL` / `OLLAMA_MODEL` | `localhost:11434` / `llama3.2` | Local Ollama endpoint and model. |
 | `ANTHROPIC_API_KEY` | — | Enables Anthropic inference. |
 | `OPENAI_API_KEY` | — | Enables OpenAI inference and embeddings. |
 | `NEWSAPI_KEY` | — | Enables live news retrieval; otherwise sample data is used. |
-| `VITE_API_URL` | `http://localhost:8000` | API base URL consumed by the client. |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | API base URL consumed by the web client. |
 
 When no provider key is configured, the application runs in its offline mode with
 deterministic output. When no embedding provider is available, a local embedding
 model powers semantic retrieval.
+
+## Deployment
+
+The production deployment uses entirely free-tier services:
+
+| Component | Provider | Plan |
+|---|---|---|
+| Frontend | [Vercel](https://vercel.com) | Free |
+| Backend API | [Render](https://render.com) | Free |
+| PostgreSQL | [Neon](https://neon.tech) | Free (no expiry) |
+| Redis | [Upstash](https://upstash.com) | Free (no expiry) |
+
+See [DEPLOY.md](DEPLOY.md) for detailed setup instructions.
 
 ## Testing
 
@@ -225,19 +255,9 @@ flow, filing ingestion with retrieval-augmented chat, and each analytical endpoi
 | `POST` | `/api/competitors` | Peer benchmarking. |
 | `POST` | `/api/sentiment` | News sentiment analysis. |
 | `GET`, `POST` | `/api/portfolio/*` | Holdings and recommendations. |
+| `POST`, `GET` | `/api/v1/memo`, `/api/v1/memo/{id}/pdf` | Investment memo generation and PDF export. |
 
 Complete, interactive documentation is available at `/docs`.
-
-## Deployment
-
-The backend is a stateless container suitable for any orchestrator (for example
-AWS ECS or Fargate, Fly.io, Render, or Railway). In production, point
-`DATABASE_URL` at a managed PostgreSQL instance with the `pgvector` extension
-enabled and provide `SECRET_KEY` and the relevant provider credentials. The
-frontend compiles to static assets that can be served from a CDN or the bundled
-Nginx image; build it with `VITE_API_URL` set to the public API address.
-Continuous integration runs the backend test suite and a production build of the
-client on every push.
 
 ## Disclaimer
 
