@@ -98,7 +98,7 @@ function Bubble({ m }: { m: ChatMsg }) {
   return (
     <div className={`flex ${user ? "justify-end" : "justify-start"}`}>
       <div className="max-w-[85%]">
-        <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${user ? "bg-brand font-medium text-base" : "border border-line bg-surface/50"}`}>
+        <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${user ? "bg-brand-grad font-medium text-white shadow-glow" : "border border-line bg-surface/70"}`}>
           {user ? m.content : <div className="prose-sm space-y-2"><ReactMarkdown>{m.content}</ReactMarkdown></div>}
         </div>
         {m.citations && m.citations.length > 0 && (

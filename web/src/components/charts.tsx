@@ -4,31 +4,31 @@ import {
   ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
 
-const AXIS = "#6B7280", GRID = "#23272F";
-export const PIE = ["#10B981", "#3B82F6", "#F59E0B", "#A78BFA", "#F43F5E", "#22D3EE", "#FB923C"];
-const tip = { background: "#16191F", border: "1px solid #23272F", borderRadius: 12, color: "#F2F4F7", fontSize: 12 };
+const AXIS = "#9A9BA4", GRID = "#E6E4DD";
+export const PIE = ["#4F46E5", "#7C3AED", "#059669", "#D97706", "#E11D48", "#0891B2", "#DB2777"];
+const tip = { background: "#FFFFFF", border: "1px solid #E6E4DD", borderRadius: 12, color: "#16161D", fontSize: 12, boxShadow: "0 12px 32px -14px rgba(22,22,29,0.20)" };
 
 export function FcfArea({ data }: { data: { year: string; fcf: number; pv: number }[] }) {
   return (
     <ResponsiveContainer width="100%" height={260}>
       <AreaChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
         <defs>
-          <linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#10B981" stopOpacity={0.5} /><stop offset="100%" stopColor="#10B981" stopOpacity={0} /></linearGradient>
-          <linearGradient id="gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#3B82F6" stopOpacity={0.4} /><stop offset="100%" stopColor="#3B82F6" stopOpacity={0} /></linearGradient>
+          <linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#059669" stopOpacity={0.45} /><stop offset="100%" stopColor="#059669" stopOpacity={0} /></linearGradient>
+          <linearGradient id="gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#4F46E5" stopOpacity={0.4} /><stop offset="100%" stopColor="#4F46E5" stopOpacity={0} /></linearGradient>
         </defs>
         <CartesianGrid stroke={GRID} vertical={false} />
         <XAxis dataKey="year" stroke={AXIS} fontSize={12} tickLine={false} />
         <YAxis stroke={AXIS} fontSize={12} tickLine={false} width={46} />
         <Tooltip contentStyle={tip} formatter={(v: number) => `$${v.toLocaleString()}M`} />
         <Legend wrapperStyle={{ fontSize: 12 }} />
-        <Area type="monotone" dataKey="fcf" name="Projected FCF" stroke="#10B981" fill="url(#gf)" strokeWidth={2} />
-        <Area type="monotone" dataKey="pv" name="Present Value" stroke="#3B82F6" fill="url(#gp)" strokeWidth={2} />
+        <Area type="monotone" dataKey="fcf" name="Projected FCF" stroke="#059669" fill="url(#gf)" strokeWidth={2} />
+        <Area type="monotone" dataKey="pv" name="Present Value" stroke="#4F46E5" fill="url(#gp)" strokeWidth={2} />
       </AreaChart>
     </ResponsiveContainer>
   );
 }
 
-export function Bars({ data, color = "#10B981", label }: { data: { ticker: string; value: number | null }[]; color?: string; label: string }) {
+export function Bars({ data, color = "#4F46E5", label }: { data: { ticker: string; value: number | null }[]; color?: string; label: string }) {
   return (
     <ResponsiveContainer width="100%" height={240}>
       <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -58,9 +58,9 @@ export function Donut({ data }: { data: { label: string; value: number }[] }) {
 
 export function SentimentBars({ distribution }: { distribution: Record<string, number> }) {
   const data = [
-    { name: "Positive", value: distribution.positive || 0, fill: "#10B981" },
-    { name: "Neutral", value: distribution.neutral || 0, fill: "#6B7280" },
-    { name: "Negative", value: distribution.negative || 0, fill: "#F43F5E" },
+    { name: "Positive", value: distribution.positive || 0, fill: "#059669" },
+    { name: "Neutral", value: distribution.neutral || 0, fill: "#9A9BA4" },
+    { name: "Negative", value: distribution.negative || 0, fill: "#E11D48" },
   ];
   return (
     <ResponsiveContainer width="100%" height={200}>
