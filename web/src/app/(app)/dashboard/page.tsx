@@ -29,7 +29,15 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div><h2 className="text-2xl font-semibold">Research desk</h2><p className="text-sm text-ink-muted">Your markets and portfolio at a glance.</p></div>
+      <div className="relative overflow-hidden rounded-3xl border border-line bg-surface/70 p-6 shadow-glass backdrop-blur-xl lg:p-8">
+        <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-brand/20 blur-3xl animate-float" />
+        <div className="pointer-events-none absolute -bottom-24 right-24 h-48 w-48 rounded-full bg-brand-violet/20 blur-3xl" />
+        <div className="relative">
+          <span className="chip bg-brand/10 text-brand ring-1 ring-inset ring-brand/20">Research desk</span>
+          <h2 className="mt-3 text-3xl font-semibold leading-tight lg:text-4xl">Your markets, <span className="grad-text">intelligently distilled.</span></h2>
+          <p className="mt-2 max-w-xl text-sm text-ink-muted">Filings, valuation and portfolio signal — unified in one workspace.</p>
+        </div>
+      </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {portfolio.isLoading ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-24" />) : (

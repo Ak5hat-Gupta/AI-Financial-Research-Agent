@@ -43,15 +43,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen">
       <aside className={cn("fixed inset-y-0 left-0 z-40 w-64 transform border-r border-line bg-surface-raised/80 backdrop-blur-xl transition-transform lg:static lg:translate-x-0", open ? "translate-x-0" : "-translate-x-full")}>
         <div className="flex h-16 items-center gap-2.5 border-b border-line px-5">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand/15 text-brand"><LineChart size={20} /></span>
-          <div className="leading-tight"><div className="text-sm font-semibold">Atlas</div><div className="text-[11px] text-ink-faint">Equity Research</div></div>
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-grad text-white shadow-glow"><LineChart size={20} /></span>
+          <div className="leading-tight"><div className="font-display text-lg font-semibold tracking-tight">Atlas</div><div className="text-[11px] text-ink-faint">Equity Research</div></div>
         </div>
         <nav className="space-y-1 p-3">
           {NAV.map((n) => {
             const on = pathname === n.href || pathname.startsWith(n.href + "/");
             return (
               <Link key={n.href} href={n.href} onClick={() => setOpen(false)}
-                className={cn("flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors", on ? "bg-brand/15 text-brand" : "text-ink-muted hover:bg-surface-overlay/60 hover:text-ink")}>
+                className={cn("flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all", on ? "bg-brand/10 text-brand ring-1 ring-inset ring-brand/20 shadow-sm" : "text-ink-muted hover:bg-surface-overlay/70 hover:text-ink")}>
                 <n.icon size={18} />{n.label}
               </Link>
             );
@@ -69,7 +69,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {open && <div className="fixed inset-0 z-30 bg-black/60 lg:hidden" onClick={() => setOpen(false)} />}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-line bg-base/70 px-4 backdrop-blur-xl lg:px-8">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-line bg-canvas/70 px-4 backdrop-blur-xl lg:px-8">
           <div className="flex items-center gap-3">
             <button className="cursor-pointer rounded-lg p-2 text-ink-muted hover:bg-surface-overlay/60 lg:hidden" onClick={() => setOpen((v) => !v)} aria-label="Menu">{open ? <X size={20} /> : <Menu size={20} />}</button>
             <h1 className="text-lg font-semibold">{active?.label ?? "Atlas"}</h1>
